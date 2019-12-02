@@ -1,0 +1,17 @@
+<entry key="delete">
+    <bean parent="DeleteSingleRowOperation">
+        <property name="actionDefinition">
+            <bean parent="SqlAction">
+                <property name="sqlCommand">
+                    <value>
+                        <![CDATA[
+::updateLogTableToD::
+                                            
+::deleteOrigTable::
+                        ]]>
+                    </value>
+                </property>
+            </bean>
+        </property>
+    </bean>
+</entry>

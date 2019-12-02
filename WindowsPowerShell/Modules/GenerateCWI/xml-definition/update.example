@@ -1,0 +1,97 @@
+<entry key="update">
+    <bean parent="UpdateDataOperation">
+        <property name="actionDefinition">
+            <bean parent="SqlAction">
+                <property name="sqlCommand">
+                    <value>
+                        <![CDATA[
+::updateLogTableToD::
+
+::updateIntoLogTableWithParams::
+
+::updateOrigTableWithParams::
+                        ]]>
+                    </value>
+                </property>
+            </bean>
+        </property>
+
+        <property name="inputDialog">
+            <bean parent="InputDialog">
+                <property name="columnSets">
+                    <list>
+                        <bean parent="ColumnSet">
+                            <property name="title">
+                                <props>
+                                    <prop key="">Atributes</prop>
+                                    <prop key="cs">Atributy</prop>
+                                </props>
+                            </property>
+                            <property name="columns">
+                                <list>
+::columnValueBean::
+                                </list>
+                            </property>
+                        </bean>
+                    </list>
+                </property>
+                <property name="validator">
+                    <bean parent="Validator">
+                        <property name="validations">
+                            <list>
+::validationNotNull::
+                                <bean parent="ValidationSQLQueryEmptyResult">
+                                    <property name="column" value="::columnNamePrimaryFirst::"/>
+                                    <property name="sqlQuery">
+                                        <bean parent="SQLQuery">
+                                            <property name="databaseName" value="::nameOfTechUser::"/>
+                                            <property name="sqlQuery">
+                                                <map>
+                                                    <entry key="">
+                                                        <value>
+                                                            <![CDATA[
+::selectForDuplicityCheckUpdate::
+															]]>
+                                                        </value>
+                                                    </entry>
+                                                </map>
+                                            </property>
+                                        </bean>
+                                    </property>
+                                    <property name="errorMessage">
+                                        <props>
+                                            <prop key="">Nelze vlozit duplicitni zaznam. Duplicita primarniho indexu.</prop>
+                                        </props>
+                                    </property>
+                                </bean>
+                                <!-- <bean parent="ValidationSQLQueryEmptyResult">
+                                    <property name="column" value="::columnNamePrimaryFirst::"/>
+                                    <property name="sqlQuery">
+                                        <bean parent="SQLQuery">
+                                            <property name="databaseName" value="::nameOfTechUser::"/>
+                                            <property name="sqlQuery">
+                                                <map>
+                                                    <entry key="">
+                                                        <value>
+                                                            <![CDATA[
+															]]>
+                                                        </value>
+                                                    </entry>
+                                                </map>
+                                            </property>
+                                        </bean>
+                                    </property>
+                                    <property name="errorMessage">
+                                        <props>
+                                            <prop key="">Pokousit se vlozit nezmeneny zaznam. Akci opakujte nebo stornujte.</prop>
+                                        </props>
+                                    </property>
+                                </bean> -->
+                            </list>
+                        </property>
+                    </bean>
+                </property>
+            </bean>
+        </property>
+    </bean>
+</entry>

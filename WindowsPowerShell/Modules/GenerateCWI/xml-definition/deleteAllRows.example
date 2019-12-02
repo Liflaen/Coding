@@ -1,0 +1,17 @@
+<entry key="DeleteAll">
+    <bean parent="DeleteAllDataOperation">
+        <property name="actionDefinition">
+            <bean parent="SqlAction">
+                <property name="sqlCommand">
+                    <value>
+                        <![CDATA[
+::updateAllInLog::
+
+::deleteAllFromOrig::
+                        ]]>
+                    </value>
+                </property>
+            </bean>
+        </property>
+    </bean>
+</entry>

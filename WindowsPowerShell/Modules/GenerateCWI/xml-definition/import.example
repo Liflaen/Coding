@@ -1,0 +1,76 @@
+<property name="dataImport">
+    <bean parent="DataImport">
+        <property name="availableForRoles" value="editor"/>
+        <property name="failedValidation" value="ROLLBACK_IMPORT"/>
+        <property name="validationLimit" value="10000"/>
+        <property name="preInsert">
+            <bean parent="SQLQuery">
+                <property name="sqlQuery">
+                    <map>
+                        <entry key="">
+                            <value>
+                                <![CDATA[
+::deleteAllFromGT::
+								]]>
+                            </value>
+                        </entry>
+                    </map>
+                </property>
+            </bean>
+        </property>
+
+        <property name="insert">
+            <bean parent="SQLQuery">
+                <property name="sqlQuery">
+                    <map>
+                        <entry key="">
+                            <value>
+                                <![CDATA[
+::insertIntoGTWithParams::
+								]]>
+                            </value>
+                        </entry>
+                    </map>
+                </property>
+            </bean>
+        </property>
+
+        <property name="postInsert">
+            <bean parent="SQLQuery">
+                <property name="sqlQuery">
+                    <map>
+                        <entry key="">
+                            <value>
+                                <![CDATA[
+::deleteOrigBasedOnGT::
+
+::updateLogBasedOnGT::
+											
+::insertLogBasedOnGT::
+
+::insertOrigBasedOnGT::									
+								]]>
+                            </value>
+                        </entry>
+                    </map>
+                </property>
+            </bean>
+        </property>
+
+        <property name="finalization">
+            <bean parent="SQLQuery">
+                <property name="sqlQuery">
+                    <map>
+                        <entry key="">
+                            <value>
+                                <![CDATA[
+::collectStatsOnOrig::
+                                ]]>
+                            </value>
+                        </entry>
+                    </map>
+                </property>
+            </bean>
+        </property>
+    </bean>
+</property>

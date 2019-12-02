@@ -1,0 +1,3 @@
+<bean parent="ValidationNotNull">
+    <property name="column" value="::columnName::"/>
+</bean>

@@ -1,0 +1,11 @@
+<bean parent="::columnType::">
+    <property name="columnName" value="::columnName::"/>
+    <property name="title">
+        <props>
+            <prop key="">::columnNameWithoutUnSlashPK::</prop>
+        </props>
+    </property>
+    <property name="primaryKey" value="true"/>
+    <property name="hidden" value="true"/>
+    <property name="exported" value="false"/>
+</bean>

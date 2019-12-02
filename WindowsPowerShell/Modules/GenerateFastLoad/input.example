@@ -1,0 +1,8 @@
+databaseSufix                          :_dev
+tablePrefix                            :TT2_
+userName                               :e_ttinte
+teradataServer (prod or test)          :test
+separator                              :;
+lengthOfVarchar                        :400
+columnTypeInDefine                     :VARCHAR
+password                               :

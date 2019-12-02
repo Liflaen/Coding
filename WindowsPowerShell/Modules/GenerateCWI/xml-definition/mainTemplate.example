@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" 
+"http://www.springframework.org/dtd/spring-beans.dtd">
+
+
+<beans>
+    <import resource="AllImports.xml" />
+
+    <bean id="Report" parent="ReportClass">
+        <property name="title">
+            <props>
+                <prop key="">::tableName::</prop>
+            </props>
+        </property>
+
+        <property name="refreshTime" value="30" />
+        <property name="mainQuery">
+            <bean parent="SQLQuery">
+                <property name="databaseName" value="::nameOfTechUser::" />
+                <property name="sqlQuery">
+                    <map>
+                        <!-- select -->
+                        <entry key="">
+                            <value>
+                                <![CDATA[
+::mainSelect::
+                                ]]>
+                            </value>
+                        </entry>
+                    </map>
+                </property>
+            </bean>
+        </property>
+        <property name="columns">
+            <list>
+::columnDefinition::
+            </list>
+        </property>
+        <property name="definedActions">
+            <map>
+<!-- insert -->
+::mainInsert::
+<!-- update -->
+::mainUpdate::
+<!-- delete single rows -->
+::deleteSingleRow::
+<!-- delete multi rows -->
+::deleteMultiRow::
+<!-- delete all rows -->
+::deleteAllRows::
+            </map>
+        </property>
+::mainImport::
+    </bean>
+</beans>

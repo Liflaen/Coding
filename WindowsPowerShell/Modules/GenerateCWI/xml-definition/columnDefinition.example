@@ -1,0 +1,8 @@
+<bean parent="::columnType::">
+    <property name="columnName" value="::columnName::" />
+    <property name="title">
+        <props>
+            <prop key="">::columnNameWithoutUnSlash::</prop>
+        </props>
+    </property>
+</bean>
