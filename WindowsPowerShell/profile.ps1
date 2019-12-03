@@ -57,4 +57,9 @@ function get-gitcommitm {
 }
 Set-Alias gcom get-gitcommitm
 
+function set-difftool {
+    git difftool --dir-diff
+}
+Set-Alias gdd set-difftool
+
 Write-Host "Profile import finished!" -ForegroundColor Green
