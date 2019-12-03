@@ -16,7 +16,7 @@ screen = pygame.display.set_mode((width,height))
 background = pygame.image.load('images\\background.png')
 
 # background sound of game (-1 will play it in loop)
-mixer.music.load('sounds\\background.wav')
+mixer.music.load('sounds\\space_ambient.wav')
 mixer.music.play(-1)
 
 # title and icon of main window
@@ -30,6 +30,7 @@ playerX = 370
 playerY = 480
 playerX_change = 0
 playerX_speed = 5
+player_size = 64
 
 # multiplet enemies setup / list
 enemyImg = []
@@ -69,6 +70,14 @@ final_bossX_change = 5
 final_bossX_speed = 5
 final_boss_size = 128
 
+# final boss slime attack
+final_boss_attackImg = pygame.image.load('images\\slime64.png')
+final_boss_attackX = 0
+final_boss_attack_start_coor = 40
+final_boss_attackY = final_boss_attack_start_coor
+final_boss_attackY_change = 7
+final_boss_attack_state = "ready"
+
 # bullet setup
 # Ready - u cant see bullet
 # Fire - bullet is fired and moving
@@ -79,18 +88,13 @@ bulletY = bulletY_start_coor
 bulletY_change = 7
 bullet_state = "ready"
 
-# Score
-score_value = 0
-score_textX = 10
-score_textY = 10
-
 # rest of enemies
 rest_in_wave = 6
 rest_textX = 10
-rest_textY = 31
+rest_textY = 10
 
 # general text
-font = pygame.font.Font('freesansbold.ttf', 16)
+font = pygame.font.Font('freesansbold.ttf', 20)
 
 # game over text setup
 big_font = pygame.font.Font('freesansbold.ttf', 64)
@@ -120,18 +124,26 @@ def fire_bullet(x, y):
     # +16 and +10 center of ship while firing
     screen.blit(bulletImg, (x + 16, y + 10))
 
-def isCollision(enemyX, enemyY, bulletX, bulletY, size):
+def fire_boss_attack(x, y):
+    global final_boss_attack_state
+    final_boss_attack_state = "fire"
+    screen.blit(final_boss_attackImg, (x + 64, y + 128))
+
+def isCollision(firstX, firstY, secondX, secondY, size):
     # distance between two points formula
-    distance = math.sqrt((math.pow(enemyX - bulletX, 2)) + (math.pow(enemyY - bulletY, 2)))
+    distance = math.sqrt((math.pow(firstX - secondX, 2)) + (math.pow(firstY - secondY, 2)))
     if distance < size:
         return True
     else:
         return False
     
-
-# main game loop 
 running = True
 play_monster_kill = True
+
+#Game time
+start_ticks = pygame.time.get_ticks()
+
+# main game loop 
 while running:
     # for cycle will search all event in program , it must be there becasue of infinity loop
     for event in pygame.event.get():
@@ -148,7 +160,7 @@ while running:
                 playerX_change = playerX_speed
             if event.key == pygame.K_SPACE:
                 # bullet will have same X coor the whole time otherwise with more space X will be changing
-                if bullet_state is "ready":
+                if bullet_state == "ready":
                     bulletX = playerX
                     bullet_sound = mixer.Sound('sounds\laser.wav')
                     bullet_sound.play()
@@ -191,21 +203,21 @@ while running:
 
             bulletY = bulletY_start_coor
             bullet_state = "ready"
-            score_value += 1
             rest_in_wave -= 1
-            if score_value < 1: #15
-                enemyX[i] = random.randint(0, 736)
-                enemyY[i] = random.randint(-130, -80)
-            # remove enemy from list
-            else:
+            if rest_in_wave < num_of_enemies:
+                # remove enemy from list
                 enemyX.remove(enemyX[i])
                 enemyY.remove(enemyY[i])
                 break
+            else:                
+                enemyX[i] = random.randint(0, 736)
+                enemyY[i] = random.randint(-130, -80)
+                
         
         enemy(enemyX[i], enemyY[i], i)
 
     # generate final boss
-    if score_value == 6:
+    if rest_in_wave == 0:
         # draw health of final boss
         shift = 5
         heart_size = 32
@@ -226,10 +238,35 @@ while running:
                 final_bossX_change -= final_bossX_speed
             elif final_bossX <= 0:
                 final_bossX_change += final_bossX_speed
+                
+        # if final boss is out of galaxy on his place
+        if final_bossY >= 40 and final_boss_attack_state == "ready":
+            final_boss_attackX = final_bossX
+            fire_boss_attack(final_boss_attackX, final_boss_attackY)
+
+        # if attack is active / fire
+        if final_boss_attack_state == "fire":
+            fire_boss_attack(final_boss_attackX, final_boss_attackY)
+            final_boss_attackY += final_boss_attackY_change
+
+        # get new slime
+        if final_boss_attackY >= 600:
+            final_boss_attack_state = "ready"
+            final_boss_attackY = final_boss_attack_start_coor
+
+        # if boss hit game will end
+        collision_boss_to_player = isCollision(final_boss_attackX, final_boss_attackY, playerX - 16, playerY - 64, player_size)
+        if collision_boss_to_player:
+            enemy_explosion = mixer.Sound('sounds\explosion.wav')
+            enemy_explosion.play()
+            playerY = 2000
+            final_bossY = 2000
+            final_boss_attack_state = "stop"
+            fire_bullet = "stop"
 
         # collision with boss
-        collision = isCollision(final_bossX, final_bossY, bulletX, bulletY, final_boss_size)
-        if collision:
+        collision_bullet_to_boss = isCollision(final_bossX, final_bossY, bulletX, bulletY, final_boss_size)
+        if collision_bullet_to_boss:
             enemy_explosion = mixer.Sound('sounds\explosion.wav')
             enemy_explosion.play()
             bulletY = bulletY_start_coor
@@ -244,6 +281,9 @@ while running:
                 monster_kill.play()
                 play_monster_kill = False
             main_text("YOU WON", 250, 250)
+        
+        if playerY == 2000:
+            main_text("GAME OVER", 200, 250)
             
     # add boundaries of spaceshiop + moving space
     playerX += playerX_change
@@ -258,13 +298,15 @@ while running:
         bulletY = bulletY_start_coor
 
     # bullet movement
-    if bullet_state is "fire":
+    if bullet_state == "fire":
         fire_bullet(bulletX, bulletY)
         bulletY -= bulletY_change
     
     player(playerX, playerY)
-    show_general_text(score_textX, score_textY, score_value, "Score")
-    show_general_text(rest_textX, rest_textY, rest_in_wave, "Rest in wave")
+    show_general_text(rest_textX, rest_textY, rest_in_wave, "Enemies left")
+
+    # time counting
+    seconds = (pygame.time.get_ticks() - start_ticks) / 1000
 
     # we need update our screen while stuff is changing
     pygame.display.update()
