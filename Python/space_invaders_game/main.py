@@ -29,21 +29,24 @@ playerY = 480
 playerX_change = 0
 playerX_speed = 5
 
-# multiplet enemies setup
+# multiplet enemies setup / list
 enemyImg = []
 enemyX = []
 enemyY = []
 enemyX_change = []
 enemyY_change = []
+enemyY_start_change = []
 enemyX_speed = []
 num_of_enemies = 6
 
+# fillin list of 6 enemies
 for i in range(num_of_enemies):
     enemyImg.append(pygame.image.load('images\\ufo-enemy64.png'))
     enemyX.append(random.randint(0, 736))
-    enemyY.append(random.randint(0, 60))
+    enemyY.append(random.randint(-130, -80))
     enemyX_change.append(4)
     enemyY_change.append(40)
+    enemyY_start_change.append(2)
     enemyX_speed.append(4)
 
 # bullet setup
@@ -64,11 +67,11 @@ textX = 10
 textY = 10
 
 # game over text setup
-game_over_font = pygame.font.Font('freesansbold.ttf', 64)
+big_font = pygame.font.Font('freesansbold.ttf', 64)
 
-def game_over_text():
-    game_over_text = game_over_font.render("GAME OVER", True, (255, 255, 255))
-    screen.blit(game_over_text, (200, 250))
+def main_text(text, x, y):
+    main_text = big_font.render(text, True, (255, 255, 255))
+    screen.blit(main_text, (x, y))
 
 def show_score (x, y):
     # label , True - want to render , Color
@@ -130,21 +133,24 @@ while running:
     screen.blit(background, (0,0))
 
     # enemy movements
-    for i in range(num_of_enemies):
+    for i in range(len(enemyX)):
         # Game over text
-        if enemyY[i] > 440:
-            for j in range(num_of_enemies):
+        if enemyY[i] > 430:
+            for j in range(len(enemyX)):
                 enemyY[j] = 2000
-            game_over_text()
+            main_text("GAME OVER", 200, 250)
             break
-
-        enemyX[i] += enemyX_change[i]
-        if enemyX[i] <= 0:
-            enemyY[i] += enemyY_change[i]
-            enemyX_change[i] = enemyX_speed[i]
-        elif enemyX[i] >= 736:
-            enemyY[i] += enemyY_change[i]
-            enemyX_change[i] = -enemyX_speed[i]
+        # a little bit better spawning of enemies coming from shadows generated -130,-80 and then go down until reach Y = 30 , then will start normal beahvior of enemies
+        if enemyY[i] <= 30:
+            enemyY[i] += enemyY_start_change[i]
+        else:
+            enemyX[i] += enemyX_change[i]
+            if enemyX[i] <= 0:
+                enemyY[i] += enemyY_change[i]
+                enemyX_change[i] = enemyX_speed[i]
+            elif enemyX[i] >= 736:
+                enemyY[i] += enemyY_change[i]
+                enemyX_change[i] = -enemyX_speed[i]
 
         # Collision check between enemy and bullet
         collision = isCollision(enemyX[i], enemyY[i], bulletX, bulletY)
@@ -156,8 +162,14 @@ while running:
             bulletY = bulletY_start_coor
             bullet_state = "ready"
             score_value += 1
-            enemyX[i] = random.randint(0, 736)
-            enemyY[i] = random.randint(0, 60)
+            if score_value < 15:
+                enemyX[i] = random.randint(0, 736)
+                enemyY[i] = random.randint(-130, -80)
+            # remove enemy from list
+            else:
+                enemyX.remove(enemyX[i])
+                enemyY.remove(enemyY[i])
+                break
         
         enemy(enemyX[i], enemyY[i], i)
 
