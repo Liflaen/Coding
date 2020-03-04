@@ -57,7 +57,7 @@ function Get-ValidationNotNullBean {
     for ($i=0; $i -ne $arraryNotNullColumn.Count; $i++) {
         $notNullColumn = $arraryNotNullColumn[$i]
         
-        if (($notNullColumn -ne "Updated_When") -and ($notNullColumn -ne "Updated_By") -and ($notNullColumn -ne "Created_By") -and ($notNullColumn -ne "Created_When")) {
+        if (($notNullColumn -ne "Updated_When") -and ($notNullColumn -ne "Updated_By") -and ($notNullColumn -ne "Created_By") -and ($notNullColumn -ne "Created_When") -and ($notNullColumn -ne "Updated_By_User")) {
             $string += $columnNotNulValidation
 
             if ($i -ne ($arraryNotNullColumn.Count-1)) {
@@ -79,7 +79,7 @@ function Get-ColumnValueBean {
     $string = ""
     for ($i=0; $i -ne $arrayColumn.Count; $i++) {
         $columnName = $arrayColumn[$i]
-        if (($columnName -ne "Updated_When") -and ($columnName -ne "Updated_By") -and ($columnName -ne "Created_By") -and ($columnName -ne "Created_When")) {
+        if (($columnName -ne "Updated_When") -and ($columnName -ne "Updated_By") -and ($columnName -ne "Created_By") -and ($columnName -ne "Created_When") -and ($columnName -ne "Updated_By_User")) {
             $string += $columnValueBean
 
             if ($i -ne ($arrayColumn.Count-1)) {

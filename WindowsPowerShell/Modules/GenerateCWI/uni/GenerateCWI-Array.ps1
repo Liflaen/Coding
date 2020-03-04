@@ -118,7 +118,7 @@ function Get-UpdatedColumnType {
         if ($elementType -eq "TIMESTAMP") {
             $elementType = "CURRENT_TIMESTAMP(0)"
         }
-        elseif (($elementColumn -eq "Updated_By") -or ($elementColumn -eq "Created_By")) {
+        elseif (($elementColumn -eq "Updated_By") -or ($elementColumn -eq "Created_By") -or ($elementColumn -eq "Updated_By_User")) {
             $elementType = ":PARAM_CurrentUser"
         }
         elseif ($elementType -eq "BYTEINT") {

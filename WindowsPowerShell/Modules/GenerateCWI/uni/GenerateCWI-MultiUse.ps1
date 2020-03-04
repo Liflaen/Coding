@@ -60,17 +60,17 @@ function Insert-IntoLogTableWithParamsSingleLog {
     $combiWithParamsGeneral = Get-ColumnsCombiWithParams $arrayColumn $arrayColumnTypeUpdated $arraryNotNullColumn "WithJoinGen"
 
     ## Replace ::insertIntoLogTableWithParams:: < insert >
-    $insertIntoLogTableWithParams = "insert into $databaseName.$singleLogName`n(`nAction_Desc ,`nTable_Name ,`nQuerry_Text ,`n$logColumnsStringGeneral`n)`nvalues`n(`n'Insert' ,`n'::tableName::' ,`n$combiWithParams ,`n$logColumnsStringValues`n)`n;"
+    $insertIntoLogTableWithParams = "insert into $databaseName.$singleLogName`n(`nAction_Desc ,`nTable_Name ,`nQuery_Text ,`n$logColumnsStringGeneral`n)`nvalues`n(`n'Insert' ,`n'::tableName::' ,`n$combiWithParams ,`n$logColumnsStringValues`n)`n;"
     $replaceInsertIntoLogTableWithParams = Replace-StringInTemplate "::insertIntoLogTableWithParams::" $insertIntoLogTableWithParams $targetFile
     $replaceInsertIntoLogTableWithParams | Out-File $targetFile
 
     ## Replace ::updateIntoLogTableWithParams:: < update >
-    $updateIntoLogTableWithParams = "insert into $databaseName.$singleLogName`n(`nAction_Desc ,`nTable_Name ,`nQuerry_Text ,`n$logColumnsStringGeneral`n)`nvalues`n(`n'Update' ,`n'::tableName::' ,`n$combiWithParams ,`n$logColumnsStringValues`n)`n;"
+    $updateIntoLogTableWithParams = "insert into $databaseName.$singleLogName`n(`nAction_Desc ,`nTable_Name ,`nQuery_Text ,`n$logColumnsStringGeneral`n)`nvalues`n(`n'Update' ,`n'::tableName::' ,`n$combiWithParams ,`n$logColumnsStringValues`n)`n;"
     $replaceUpdateIntoLogTableWithParams = Replace-StringInTemplate "::updateIntoLogTableWithParams::" $updateIntoLogTableWithParams $targetFile
     $replaceUpdateIntoLogTableWithParams | Out-File $targetFile
 
     ## Replace ::insertLogBasedOnGT:: < import >
-    $insertLogBasedOnGT = "insert into $databaseName.$singleLogName`n(`nAction_Desc ,`nTable_Name ,`nQuerry_Text ,`n$logColumnsStringGeneral`n)`nselect`n'Import' ,`n'::tableName::' ,`n$combiWithParamsGeneral ,`n$logColumnsStringGeneral`nfrom $databaseName.gt_$tableName `n;"
+    $insertLogBasedOnGT = "insert into $databaseName.$singleLogName`n(`nAction_Desc ,`nTable_Name ,`nQuery_Text ,`n$logColumnsStringGeneral`n)`nselect`n'Import' ,`n'::tableName::' ,`n$combiWithParamsGeneral ,`n$logColumnsStringGeneral`nfrom $databaseName.gt_$tableName `n;"
     $replaceInsertLogBasedOnGT = Replace-StringInTemplate "::insertLogBasedOnGT::" $insertLogBasedOnGT $targetFile
     $replaceInsertLogBasedOnGT | Out-File $targetFile
 
@@ -156,7 +156,8 @@ function Replace-AllMultiXMLStructure {
     Comment-AllUnusedXML $targetFile
 
     ## Convert file to UTF8
-    $gcTargetFile = Get-Content $targetFile
+    $resolvedTargetPath = Resolve-Path $targetFile
+    $gcTargetFile = Get-Content $resolvedTargetPath
     $Utf8NoBomEncoding = New-Object System.Text.UTF8Encoding $False
-    [System.IO.File]::WriteAllLines($targetFile, $gcTargetFile, $Utf8NoBomEncoding)
+    [System.IO.File]::WriteAllLines($resolvedTargetPath, $gcTargetFile, $Utf8NoBomEncoding)
 }

@@ -87,12 +87,12 @@ function Get-ParamColumnsString {
             }
         }
 
-        if (($columnName -ne "Updated_When") -and ($columnName -ne "Updated_By") -and ($columnName -ne "Created_By") -and ($columnName -ne "Created_When")) {
+        if (($columnName -ne "Updated_When") -and ($columnName -ne "Updated_By") -and ($columnName -ne "Created_By") -and ($columnName -ne "Created_When") -and ($columnName -ne "Updated_By_User")) {
             if ($columnNotNull -ne $columnName) {
                 $string += ":PARAM_$columnType" + "_$columnName"
             }
             else {
-                if ($columnType -eq "decimal" -or $columnType -eq "integer") {
+                if ($columnType -eq "decimal" -or $columnType -eq "integer" -or $columnType -eq "smallint") {
                     $string += "coalesce( :PARAM_$columnType" + "_$columnName , 0)"
                 }
                 elseif ($columnType -eq "date") {
@@ -159,9 +159,9 @@ function Get-ColumnsCombiWithParams {
             }
         }
 
-        if (($columnName -ne "Updated_When") -and ($columnName -ne "Updated_By") -and ($columnName -ne "Created_By") -and ($columnName -ne "Created_When")) {
+        if (($columnName -ne "Updated_When") -and ($columnName -ne "Updated_By") -and ($columnName -ne "Created_By") -and ($columnName -ne "Created_When") -and ($columnName -ne "Updated_By_User")) {
             if ($lineEnd -eq "WithJoin") {
-                if ($columnType -eq "decimal" -or $columnType -eq "integer") {
+                if ($columnType -eq "decimal" -or $columnType -eq "integer" -or $columnType -eq "smallint") {
                     $string += "'$columnName = ' || coalesce( :PARAM_$columnType" + "_$columnName , 0)"
                 }
                 elseif ($columnType -eq "date") {
@@ -176,7 +176,7 @@ function Get-ColumnsCombiWithParams {
                     $string += "'$columnName = ' || $columnName"
                 }
                 else {
-                    if ($columnType -eq "decimal" -or $columnType -eq "integer") {
+                    if ($columnType -eq "decimal" -or $columnType -eq "integer" -or $columnType -eq "smallint") {
                         $string += "'$columnName = ' || coalesce( $columnName , 0)"
                     }
                     elseif ($columnType -eq "date") {
@@ -193,7 +193,7 @@ function Get-ColumnsCombiWithParams {
                     $string += "$columnName = :PARAM_$columnType" + "_$columnName"
                 }
                 else {
-                    if ($columnType -eq "decimal" -or $columnType -eq "integer") {
+                    if ($columnType -eq "decimal" -or $columnType -eq "integer" -or $columnType -eq "smallint") {
                         $string += "$columnName = coalesce( :PARAM_$columnType" + "_$columnName , 0)"
                     }
                     elseif ($columnType -eq "date") {
