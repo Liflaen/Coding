@@ -13,7 +13,7 @@
             </props>
         </property>
 
-        <property name="refreshTime" value="30" />
+        <property name="refreshTime" value="300" />
         <property name="mainQuery">
             <bean parent="SQLQuery">
                 <property name="databaseName" value="::nameOfTechUser::" />
