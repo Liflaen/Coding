@@ -1,6 +1,7 @@
 ## Configuration
 $target_OutDir = ".\target"
 $ddl_InDir = ".\Development\TdDDLs"
+$ddl_InDir_Excl = ".\ExDDL"
 <# $ddl_InDir = ".\Development\TdDDLs\shoper_alm" #>
 $cwiReport_OutDir = Join-Path $target_OutDir "cwi_reports"
 $singleLogName = "CWI_Event_Journal"
@@ -54,7 +55,7 @@ function Invoke-GenCWIReport {
         [Alias("ml")][switch] $multiLog,
         [Alias("f")][switch] $financ,
         [Alias("h")][switch] $hypo,
-        [Alias("c")][switch] $calc
+        [Alias("x")][switch] $excluded
 	)
 
     $cntProc = 0
@@ -111,12 +112,8 @@ function Invoke-GenCWIReport {
         "table.R_Account_Nbr_On_List.sql" | Sort-Object
     }
 
-    if ($calc) {
-        $gciFile = Get-ChildItem $ddl_InDir -Recurse -Include "table.HC_Hair_Cut.sql" ,
-        "table.HC_Sensitivity.sql" ,
-        "table.HC_Vectors.sql" ,
-        "table.MD_VBS_Process_Request.sql" ,
-        "table.C_Start_Point.sql" | Sort-Object
+    if ($excluded) {
+        $gciFile = Get-ChildItem $ddl_InDir_Excl -Recurse -Include "*.sql"
     }
 
     Write-Host "Generating CWI Reports"
