@@ -69,13 +69,13 @@ function Insert-IntoLogTableWithParamsSingleLog {
     $replaceUpdateIntoLogTableWithParams = Replace-StringInTemplate "::updateIntoLogTableWithParams::" $updateIntoLogTableWithParams $targetFile
     $replaceUpdateIntoLogTableWithParams | Out-File $targetFile
 
-    ## Replace ::updateLogTableToD:: < delete >
-    $updateLogTableToD = "insert into $databaseName.$singleLogName`n(`nAction_Desc ,`nTable_Name ,`nQuery_Text ,`n$logColumnsStringGeneral`n)`nvalues`n(`n'Delete' ,`n'::tableName::' ,`n$combiWithParams ,`n$logColumnsStringValues`n)`n;"
-    $replaceUpdateLogTableToD = Replace-StringInTemplate "::updateLogTableToD::" $updateLogTableToD $targetFile
-    $replaceUpdateLogTableToD | Out-File $targetFile
+    ## Replace ::updateLogTableToSingleLogD:: < delete >
+    $updateLogTableToSingleLogD = "insert into $databaseName.$singleLogName`n(`nAction_Desc ,`nTable_Name ,`nQuery_Text ,`n$logColumnsStringGeneral`n)`nvalues`n(`n'Delete' ,`n'::tableName::' ,`n$combiWithParams ,`n$logColumnsStringValues`n)`n;"
+    $replaceUpdateLogTableToSingleLogD = Replace-StringInTemplate "::updateLogTableToSingleLogD::" $updateLogTableToSingleLogD $targetFile
+    $replaceUpdateLogTableToSingleLogD | Out-File $targetFile
 
     ## Replace ::updateAllInLog:: < delete all >
-    $updateAllInLog = "insert into $databaseName.$singleLogName`n(`nAction_Desc ,`nTable_Name ,`nQuery_Text ,`n$logColumnsStringGeneral`n)`nselect`n'Delete All' ,`n'::tableName::' ,`n$combiWithParams ,`n$logColumnsStringValues`nfrom $databaseName.$tableName `n;"
+    $updateAllInLog = "insert into $databaseName.$singleLogName`n(`nAction_Desc ,`nTable_Name ,`nQuery_Text ,`n$logColumnsStringGeneral`n)`nselect`n'Delete All' ,`n'::tableName::' ,`n$combiWithParamsGeneral ,`n$logColumnsStringValues`nfrom $databaseName.$tableName `n;"
     $replaceUpdateAllInLog = Replace-StringInTemplate "::updateAllInLog::" $updateAllInLog $targetFile
     $replaceUpdateAllInLog | Out-File $targetFile
 
@@ -157,6 +157,10 @@ function Replace-AllMultiXMLStructure {
     ## Replace ::updateLogBasedOnGT::
     $replaceUpdateLogBasedOnGT = Replace-StringInTemplate "::updateLogBasedOnGT::" "" $targetFile
     $replaceUpdateLogBasedOnGT | Out-File $targetFile
+
+    ## Replace ::updateLogTableToSingleLogD::
+    $replaceUpdateLogTableToSingleLogD = Replace-StringInTemplate "::updateLogTableToSingleLogD::" "" $targetFile
+    $replaceUpdateLogTableToSingleLogD | Out-File $targetFile
 
     ## Replace ::::tableName:::: 
     $replaceTableName = Replace-StringInTemplate "::tableName::" $tableName $targetFile

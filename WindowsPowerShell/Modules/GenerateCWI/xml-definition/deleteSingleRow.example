@@ -6,6 +6,8 @@
                     <value>
                         <![CDATA[
 ::updateLogTableToD::
+
+::updateLogTableToSingleLogD::
                                             
 ::deleteOrigTable::
                         ]]>
