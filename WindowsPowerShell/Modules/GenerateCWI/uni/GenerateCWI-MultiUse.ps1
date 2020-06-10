@@ -75,12 +75,12 @@ function Insert-IntoLogTableWithParamsSingleLog {
     $replaceUpdateLogTableToSingleLogD | Out-File $targetFile
 
     ## Replace ::updateAllInLog:: < delete all >
-    $updateAllInLog = "insert into $databaseName.$singleLogName`n(`nAction_Desc ,`nTable_Name ,`nQuery_Text ,`n$logColumnsStringGeneral`n)`nselect`n'Delete All' ,`n'::tableName::' ,`n$combiWithParamsGeneral ,`n$logColumnsStringValues`nfrom $databaseName.$tableName `n;"
+    $updateAllInLog = "insert into $databaseName.$singleLogName`n(`nAction_Desc ,`nTable_Name ,`nQuery_Text ,`n$logColumnsStringGeneral`n)`nselect`n'Delete All' ,`n'::tableName::' ,`n$combiWithParamsGeneral ,`n$logColumnsStringValues`nfrom $databaseName.$tableName`n;"
     $replaceUpdateAllInLog = Replace-StringInTemplate "::updateAllInLog::" $updateAllInLog $targetFile
     $replaceUpdateAllInLog | Out-File $targetFile
 
     ## Replace ::insertLogBasedOnGT:: < import >
-    $insertLogBasedOnGT = "insert into $databaseName.$singleLogName`n(`nAction_Desc ,`nTable_Name ,`nQuery_Text ,`n$logColumnsStringGeneral`n)`nselect`n'Import' ,`n'::tableName::' ,`n$combiWithParamsGeneral ,`n$logColumnsStringGeneral`nfrom $databaseName.gt_$tableName `n;"
+    $insertLogBasedOnGT = "insert into $databaseName.$singleLogName`n(`nAction_Desc ,`nTable_Name ,`nQuery_Text ,`n$logColumnsStringGeneral`n)`nselect`n'Import' ,`n'::tableName::' ,`n$combiWithParamsGeneral ,`n$logColumnsStringGeneral`nfrom $databaseName.gt_$tableName`n;"
     $replaceInsertLogBasedOnGT = Replace-StringInTemplate "::insertLogBasedOnGT::" $insertLogBasedOnGT $targetFile
     $replaceInsertLogBasedOnGT | Out-File $targetFile
 
