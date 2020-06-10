@@ -1,0 +1,127 @@
+Download newest files into branch
+> git pull
+
+Get only information about changes in branch
+> git fetch
+
+Status of repository
+> git status
+
+Add of files to stage
+> git add .
+
+Commit with message
+> git commit -m 'Commit message'
+
+Push files after commit into branch (-f force)
+> git push
+
+Rename of last commit 
+> git commit --ammend 
+
+Refresh new password
+> git config --global credential.helper wincred
+> git pull (or different operation where passwd is needed)
+
+> another way , if previous doesnt work
+
+    Click Start
+    Type: Credential Manager (On Windows 10, this is under "Start->Settings". Then search for "Credential Manager")
+    See the Windows Credentials Manager shortcut and double-click it to open the application.
+    Once the app is open, click on the Windows Credentials tab.
+    Locate the credentials that you want to remove/update, they will start with "git:" and might begin with "ada:"
+    Click on the credential entry, it will open a details view of the entry.
+    Click Edit or Remove as required and confirm.
+    Wash, rinse, repeat as necessary.
+
+
+Delete of local branch
+> git branch -d <nameOfBranch> (in case of not merged branched -D is needed)
+
+Delete of remote branch
+> git push <remoteName> --delete <branchName> (remoteName is origin, branchName is everything behind origin [feature/nameOfBranch for example])
+> git fetch --all --prune (run on other machines, to propagate changes)
+
+Interactive rebase of branch
+> git rebase -i head~x (x is number of commit you want to reabse, head~ means 1 commit)
+> git push -f (cause you are changing history of branch)
+
+Rebase of branch
+> git checkout <motherBranchName> (for example develop_marketing or master)
+> git pull -r 
+> git checkout <myBranch>
+> git pull -r
+> git rebase <motherBranchName>
+(resolve conflicts etc.) - use Tortoise > Tortoise GIT > Resolve
+> git rebase --continue (after resolving conflicts)
+> git push --force-with-lease
+
+Create new branch (in this case release/MKT-R014.00.01 from develop_marketing)
+> git checkout develop_marketing
+> git pull --progress --no-rebase -v "origin"
+> git checkout -b release/MKT-R014.00.01
+> git push origin release/MKT-R014.00.01
+> git branch --set-upstream-to=origin/release/MKT-R014.00.01 release/MKT-R014.00.01
+
+Revert of commit
+> git revert <commitHash>
+> git push (git push -f)
+
+Copy commit from one branch to another one
+> git cherry-pick <commitHash>
+> git push (git push -f)
+
+-x (will add information to commit 'cherry picked form ...')
+-n (will cherry pick only files not commit then you have to do git add . and git commit , this is very usefull if you want cherry pick only few files from another commit)
+
+Copy file from another file (will track history)
+> git mv DDL\ibfs_ben_m_marketing\table.gt_Sale_Agreement_Detail.sql DDL\ibfs_ben_m_marketing\table.gt_DD_Sale_Stock_Agr.sql
+
+Exclude files from git commit and git add
+- go to .\git-repo\.git\info\exclude
+- add row with fileName which will be ignored (in git add or git commit)
+- for example i add row like this: run_velocity.bat
+- now git will ignore file run_velocity.bat , will not commit file etc.
+
+Git log
+> git log (u can do git log --oneline ; for better reading)
+
+Git reflog
+> git reflog
+
+Reset to specific commit
+> git reset <hashOfCommit> --hard (without hashOfCommit you will reset repo to newest commit, you will get clean repo)
+> git push -f
+
+- you will lost all commits between head and hashOfCommit, but you can go back via git reflog
+- reflog is log of your work in git on your computer , log is log of specific branch. After this opperation you will not see hash of commit anymore but via reflog you can see those hashes
+
+Search for specific branch (also remote branch)
+> git branch | grep <partOfBranchName> (looks only for local branches)
+> git branch -a | grep <partOfBranchName> (also looks for remote branches)
+
+Diff between commits
+> git diff <hashOfCommit>
+> git diff (diff between working tree and newest commit)
+
+In case of rebase under your hand by your "friend"
+> git reset origin/<fullNameOfBranch> --hard
+or u can delete local branch and checkout again
+
+Change specified COMMIT
+> for example we want to change commit with hash: bbc643cd
+> git rebase -i 'bbc643cd^'
+> In the default editor, modify pick to edit in the line mentioning 'bbc643cd'.
+> git commit --amend
+> git rebase --continue
+> git push --force-with-lease
+
+Delete local branch non existing on remote
+> git fetch -p && git branch -vv | awk '/: gone]/{print $1}' | xargs git branch -d
+
+Git Tag
+> git tag -a v1.4 -m "my version 1.4" (after that u must push it to master)
+> git push origin v1.4
+
+How to clone repo while using proxy
+> git config --global http.proxy http://proxyuser:proxypwd@proxy.server.com:8080

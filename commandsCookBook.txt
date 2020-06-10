@@ -1,0 +1,299 @@
+/***************************************************************************************************************************************************
+   Velocity generátor                                                                                                                               
+   Pro generování musíte být ve složce \!Data\Git_Second\ , nesmíte být ve složce Velocity, ale přímo nad ní (nad CtlFiles, DDL atd.)               
+***************************************************************************************************************************************************/
+
+java -jar v:\Shared\Velocity\velocity_v20a.jar -h -sf "O_BIIBFS_XXX\T_phase\ibfs_xxx_m_marketing\MM_ibfsXXXmmkt_DM_Officer_Profit.vm"
+
+/***************************************************************************************************************************************************
+  Select pro zjištění existenci dané položky v reportu
+    a taky  můžete zjistit:
+
+-          jestli existuje podobná položka a můžeme se inspirovat překladem do FR (např. překlad MTD do francouzštiny)
+
+-          na kterých reportech je položka použitá (např. Client Count)        
+***************************************************************************************************************************************************/
+
+sel * from m_meta_supp.V_RD_Report_Item where model_code = 'REP_IBFS_CIV_M_MARKETING' 
+--and Report_Item_Name = 'client count'
+
+/***************************************************************************************************************************************************
+Select pro zjištění jaký použít komentář na sloupci
+Pro zjištění jaké použít komentář a description na sloupci. Lepší než procházet DMM, tak je rychlejší se podívat do teradaty co už je namodelované.    
+***************************************************************************************************************************************************/
+
+select Model_Code, Table_Name, Column_Name, Column_Comment, Column_Description, Column_Data_Type, Domain_Name 
+from m_meta_supp.V_PDM_Column where Column_Name = 'Party_Status' and Model_Code like '%IBFS%'
+
+/***************************************************************************************************************************************************
+Select pro hromadné zjištění dat nebo hromadný drop atd 
+- lepší používat V_TVM než DBC.Tables a to protože DBC.Tables uřezává Maroko kvůli délce
+- Je možné, že budete potřebovat smazat hodně objektů z DB a chcete aby rozeznal VIEW od TABLE, možná konstrukce tato 
+  (zbytek stejný jako select nahoře):
+***************************************************************************************************************************************************/
+
+select Model_Code, Table_Name, Column_Name, Column_Comment, Column_Description, Column_Data_Type, 
+Domain_Name from m_meta_supp.V_PDM_Column where Column_Name = 'Party_Status' and Model_Code like '%IBFS%'
+
+select 'rename table ' || trim(Database_Name) || '.' || trim(TVM_Name) || ' to ' || trim(Database_Name) || '.Y_' || trim(TVM_Name) || ';' 
+from m_meta_supp.V_TVM where TVM_Name = 'DM_Corporate_Product' and Database_Name like '%wsp%' order by Database_Name, TVM_Name ;
+
+select 'drop ' || case when TVM_Kind_Code = 'V' then 'view' else 'table' end as Dropik, trim(Database_Name) || '.' || trim(TVM_Name) || ';'
+from m_meta_supp.V_TVM where TVM_Name = 'DM_Corporate_Product' and Database_Name like '%wsp%' order by Database_Name, TVM_Name ;
+
+select  
+ 'drop ' || 
+ case 
+  when TVM_Kind_Code = 'V' then 'view' 
+  when TVM_Kind_Code = 'P' then 'procedure'
+  when TVM_Kind_Code = 'M' then 'macro'
+  when TVM_Kind_Code = 'T' then 'table'
+  else 'unkown'
+ end as Dropik, trim(Database_Name) 
+ || '.' || trim(TVM_Name) || ';'
+from m_meta_supp.V_TVM 
+where  1=1
+and Database_Name = 'shcalc_alm_dev' 
+and TVM_Name like any ('Test3_%','Test6_%')
+order by Database_Name, TVM_Name ;
+
+select  
+ 'delete from ' ||  trim(Database_Name) 
+ || '.' || trim(TVM_Name) || ';'
+from m_meta_supp.V_TVM 
+where  1=1
+and Database_Name = 'm_hypo_dev'
+and TVM_Name like 'TT_%' 
+order by Database_Name, TVM_Name ;
+
+select  
+ 'select ''' || trim(TVM_Name) || '                               '', count(*) from ' ||  trim(Database_Name) 
+ || '.' || trim(TVM_Name) || ' union all'
+from m_meta_supp.V_TVM 
+where  1=1
+and Database_Name = 'm_hypo_dev'
+and TVM_Name like 'TT_%' 
+and TVM_Name not like '%gt_%' 
+and TVM_Name not like 'TT2_%'
+and TVM_Kind <> 'View'
+and TVM_Name <> 'TT_User_Activity_Journal'
+order by Database_Name, TVM_Name ;
+
+select  
+ 'select ''' || trim(TVM_Name) || '                               '', count(*) from ' ||  trim(Database_Name) 
+ || '.' || trim(TVM_Name) ||  case when row_number() over (order by database_name) < count(1) over (order by database_name) then ' union all' else ';' end
+from m_meta_supp.V_TVM 
+where  1=1
+and Database_Name = 'm_hypo_dev'
+and TVM_Name like 'TT_%' 
+and TVM_Name not like '%gt_%' 
+and TVM_Name not like 'TT2_%'
+and TVM_Kind <> 'View'
+and TVM_Name <> 'TT_User_Activity_Journal'
+order by row_number() over (order by database_name) ;
+
+/***************************************************************************************************************************************************
+Zjištění zda je ve sloupci použit jiný znak než LATIN
+***************************************************************************************************************************************************/
+
+select translate_chk(Employer_Name using UNICODE_TO_LATIN) as col1 f
+rom ibfs_civ_m_marketing.DM_Party_Detail where col1 <> 0 ;
+
+/***************************************************************************************************************************************************
+Zjištění zda je ve sloupci použit jiný znak než LATIN
+Select pro zjištění rozdělení řádků na jednotlivé ampy. Optimální je mít mezi nejmenším a největším číslem co nejmenší rozdíl.
+ Odhadem to může být třeba ~120 řádků rozdíl u větší tabulky.
+***************************************************************************************************************************************************/
+
+select hashamp(hashbucket(hashrow(Date_Valid, Officer_Id, Unit_Code, Profession_Code))) as Amp_NBR, count(*) as RowCount 
+from wsp_ibfs_tcd_marketing.DM_Client group by 1 ;
+
+/***************************************************************************************************************************************************
+Následující select sleduje aktuální skew a variance dané tabulky. Pozor tabulka se chová jinak na TdProd a 
+ jinak na TdTest (mají jiný počet ampů, jsou to jiné servery). Skew se tedy může testovat u nás ve WSP databázích na TdProd.
+***************************************************************************************************************************************************/
+
+select 
+Database_Name, 
+Table_Name, 
+Administered_By, 
+Peak_Perm, 
+Current_Perm, 
+Perm_Skew, 
+Perm_Variance, 
+Skew_Severity, 
+Variance_Severity, 
+Contact_Name, 
+Contact_Logon_Name, 
+Contact_Telephone, 
+Contact_Mobile, 
+Contact_SMTP_Address, 
+Contact_Unit_Code, 
+Contact_Unit, 
+Contact_Position, 
+Comment_String 
+from m_meta_supp.V_Table_Space_Usage 
+where Database_Name in ('wsp_ibfs_civ_marketing', 'wsp_ibfs_ben_marketing', 'wsp_ibfs_gin_marketing', 'wsp_ibfs_tcd_marketing') 
+and Table_Name = 'DM_Client' ;
+Zjištění CPU skew při běhu skriptu používané pro SDT
+SQL
+select
+ dt1.Country,
+ dt1.spool_usage,
+ dt1.Start_Time,
+ dt1.io_count,
+ dt1.amp_cpu_time,
+ dt1.max_amp_cpu_time,
+ dt1.min_amp_cpu_time,
+ dt1.cpu_skew,
+ dt1.cpu_skew_severity,
+ dt1.Current_Perm,
+ dt1.elapsed_time_sec,
+ dt1.result_rows_count,
+ dt1.statement_type,
+ dt1.Query_Text,
+ dt1.query_id,
+ dt1.user_name
+from
+ (
+  select
+   REGEXP_SUBSTR(vdl1.user_name, '(?<=TRF_IBFS_).*?(?=_M_MARKETING)') as Country,
+   vdl1.spool_usage,
+   vdl1.Start_Time,
+   vdl1.io_count,
+   vdl1.amp_cpu_time,
+   vdl1.max_amp_cpu_time,
+   vdl1.min_amp_cpu_time,
+   vdl1.cpu_skew,
+   vdl1.cpu_skew_severity,
+   vtsu1.Current_Perm / 1024 / 1024 as Current_Perm,
+   vdl1.elapsed_time_sec,
+   vdl1.result_rows_count,
+   vdl1.statement_type,
+   cast(vdl1.query_text as varchar(100)) as Query_Text,
+   REGEXP_REPLACE(
+    cast(
+     REGEXP_REPLACE(REGEXP_SUBSTR(Query_Text, '(?<=into ).*?(?=\()'),
+      '(_se.gt_|_[1-9]|_Sub_[1-9]|_Sub|_se.|_mmkt_dev.gt_|_mmkt_dev.)',
+      ''
+     ) as varchar(100)
+    ),
+    'marketing',
+    'marketing.'
+   ) as Table_Name1,
+   substr(Table_Name1, 1, length(Table_Name1) - 1) as Table_Name2,
+   vdl1.query_id,
+   vdl1.user_name
+  from m_meta_supp.V_DBQL_Log vdl1
+   left outer join m_meta_supp.V_Table_Space_Usage vtsu1 on
+    --cast (Table_Name as varchar (50))  = cast (vtsu1.Database_Name || '.' || vtsu1.Table_Name as varchar(50))
+    Table_Name2 = vtsu1.Database_Name || '.' || vtsu1.Table_Name
+  where vdl1.Statement_Type <> 'Collect Statistics  '
+   --and si.script_code = 'SCRIPT_NAME' -- change
+   and vdl1.user_name like '%_M_MARKETING%'
+   -- change
+   and Statement_Type = 'Insert'
+   --and dbql.Max_Amp_CPU_Time > 3
+   --and dbql.AMP_CPU_Time > 10
+   --and dbql.CPU_Skew_Severity is not null
+   and
+    (
+     Start_Date = current_date - 1
+      or Start_Date = current_date - 2
+    )
+   --and dbql.elapsed_time_sec > 1
+   and Query_Text not like 'exec%'
+   and Query_Text not like '%.X\_%' escape '\'
+   and Country is not null
+ ) dt1
+order by Start_Time
+;
+
+/***************************************************************************************************************************************************
+Zjištění CPU skew při běhu skriptu Pro nasazení
+***************************************************************************************************************************************************/
+
+select vdl1.spool_usage, vdl1.Start_Time, vdl1.io_count, vdl1.amp_cpu_time, vdl1.max_amp_cpu_time, vdl1.min_amp_cpu_time, vdl1.cpu_skew, 
+vdl1.cpu_skew_severity, vdl1.elapsed_time_sec, vdl1.result_rows_count, vdl1.statement_type, vdl1.query_text, vdl1.query_id, vdl1.user_name 
+from m_meta_supp.V_DBQL_Log vdl1 
+where vdl1.Statement_Type <> 'Collect Statistics ' 
+and vdl1.user_name = 'e_ttinte' 
+and Statement_Type = 'insert' 
+and vdl1.Query_Text like '%DD_Standing_Order_Sum%' 
+and collect_timestamp(date) = current_date 
+and collect_timestamp(time) > '15:05:00' 
+
+and ( vdl1.AMP_CPU_Time > 10 
+and vdl1.MAX_AMP_CPU_Time > 3 -- od R017 by mělo jít pryč 
+and vdl1.CPU_Skew_Severity is not null 
+or vdl1.AMP_CPU_Time > 672 
+or vdl1.CPU_Skew_Severity = 'Degraded') 
+
+order by 2 desc ; 
+
+/***************************************************************************************************************************************************
+Pousteni sed.exe ze souboru a nebo primo s prepinacem (powershell spatne muze escapovat znaky lepsi poustet soubory)
+***************************************************************************************************************************************************/
+
+sed.exe -Ee "s/(create|replace)(.*\bview\s+)/\1\2::USR::/gi" <nameOfConvertingFile>
+
+gc <nameOfConvertingFile> | sed.exe -Ef <fileWithSedRule>
+
+cat c:\Users\ttintera\!Develop\!ALM\RunMe\CSC.CKLIST_ADD.txt | sed.exe -Ef c:\Users\ttintera\!Develop\!ALM\RunMe\sedCklistAdd.txt > c:\Users\ttintera\!Develop\!ALM\RunMe\res.txt
+
+/***************************************************************************************************************************************************
+Vytvoreni souboru z prikazove radky
+***************************************************************************************************************************************************/
+
+echo "s/(create|replace)(.*\bview\s+)/\1\2::USR::/gi" >  C:\Users\ttintera\!Develop\sed.txt
+
+/***************************************************************************************************************************************************
+regular bash v cmd - nenici kodovani
+***************************************************************************************************************************************************/
+
+sed -i 's/replace/database m_hypo;\n\nreplace/i' * 
+
+/g => global , v celem souboru / jinak se zastavi na prvnim vyskytu
+s/ => ze budu replacovat to za to
+/i => incasensitive 
+
+/***************************************************************************************************************************************************
+delete of credentials in windows
+***************************************************************************************************************************************************/
+
+rundll32.exe keymgr.dll,KRShowKeyMgr
+
+/***************************************************************************************************************************************************
+hromadna zmena pomoci sed, cyklem v cmd
+***************************************************************************************************************************************************/
+
+for %i in (*) do sed -E -f c:\Users\ttintera\Documents\WindowsPowerShell\SEDRules\hypoSed.txt %i > c:\Users\ttintera\Documents\WindowsPowerShell\SEDRules\res\%i
+
+for %i in (*) do cat %i >> .\res.txt
+
+/***************************************************************************************************************************************************
+jak nakrmit jenkins success flag
+***************************************************************************************************************************************************/
+/*
+-u login:password
+vytvorit soubor test.json , v nem vytvorit strukturu
+*/
+curl -X POST -d@test.json -u e_ttinte:passwd --verbose -k --url "https://git.kb.cz/rest/build-status/1.0/commits/f13d5f5c15d74c662fa2aa807df5e343f2dd07e6" --header "Content-Type: application/json"
+
+
+/***************************************************************************************************************************************************
+spool usage of user
+***************************************************************************************************************************************************/
+
+SELECT 
+Start_Date, Start_Time, Query_Id, User_Name, Client_User_Id, IP_Address,
+Client_Program, Active_AMPs_Count, IO_Count, AMP_CPU_Time, LH_Ratio, 
+Spool_Usage, Spool_Usage_Relevance, Max_AMP_CPU_Time, Min_AMP_CPU_Time, 
+CPU_Skew, CPU_Skew_Severity, CPU_Variance, Max_AMP_IO, Min_AMP_IO, IO_Skew, 
+IO_Variance, Result_Rows_Count, Steps_Count, First_Step_Time, First_Resp_Time, Elapsed_Interval, 
+Elapsed_Time_Sec, Statement_Type, Query_Text, Error_Code, Error_Text, Profile_Id, Profile_Name, 
+Account_String, Logon_Date_Time, Logon_Date, Collect_TimeStamp, Collect_Date, Default_Database,
+Host_Id, Session_No, PE_No 
+FROM m_meta_supp.V_DBQL_Log 
+where user_name = 'g_alm' 
+and start_date = '2020-02-07' ;
