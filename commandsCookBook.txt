@@ -297,3 +297,17 @@ Host_Id, Session_No, PE_No
 FROM m_meta_supp.V_DBQL_Log 
 where user_name = 'g_alm' 
 and start_date = '2020-02-07' ;
+
+/* Regression test */
+
+select  
+ 'select ''' ||  trim(TVM_Name) || '                                 '' as Table_Name, count(*) as Pocet from ' || trim(Database_Name) || '.' || trim(TVM_Name) || ' union all'
+from m_meta_supp.V_TVM 
+where  1=1
+and Database_Name = 'm_hypo_dev'
+and TVM_Name not like 'm\_%' escape '\'
+and TVM_Name not like 'y\_%' escape '\'
+and TVM_Name not like 'gt\_%' escape '\'
+and TVM_Name not like 'tmp\_%' escape '\'
+and TVM_Kind = 'Table'
+order by Database_Name, TVM_Name ;
