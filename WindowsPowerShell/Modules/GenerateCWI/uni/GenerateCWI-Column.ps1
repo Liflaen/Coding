@@ -17,10 +17,35 @@ function Get-ColumnString {
 
 function Get-GeneralColumnType {
     param (
+        [string[]] $arrayColumn,
+        [string[]] $arrayColumnType,
+        [string[]] $arrayPrimaryIndex,
+        [string] $columnType,
+        [string] $string,
+        [int] $primaryRow,
+        [bool] $flagPrimaryKey
+    )
+    if ($flagPrimaryKey) {
+        for ($i=0; $i -ne $arrayColumn.Count; $i++) {
+            if ($arrayColumn[$i] -eq $arrayPrimaryIndex[$primaryRow]) {
+                $columnType = $arrayColumnType[$i]
+                $string = Get-GeneralColumnTypeExact $columnType $string
+            }
+        }
+    }
+    else {
+        $string = Get-GeneralColumnTypeExact $columnType $string
+    }
+
+    return $string
+}
+
+function Get-GeneralColumnTypeExact {
+    param (
         [string] $columnType,
         [string] $string
     )
-    
+
     if (($columnType -eq "varchar") -or ($columnType -eq "char")) {
         $string = $string -replace [regex]::escape("::columnType::"), "StringColumn"
     }

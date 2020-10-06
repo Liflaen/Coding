@@ -25,25 +25,32 @@ function Get-ColumnDefinitionString {
     )
 
     $string = ""
+    $primaryRow = 0
+    # generating columnDefinitionBean in for cycle
     for ($i=0; $i -ne $arrayColumn.Count; $i++) {
         $string += "$columnDefinitionBean`n"
-        $string = Get-GeneralColumnType $arrayColumnType[$i] $string
+        # $false is flag for NonPrimaryKey columnType
+        $string = Get-GeneralColumnType $arrayColumn $arrayColumnType $arrayPrimaryIndex $arrayColumnType[$i] $string $primaryRow $false
         $string = $string -replace [regex]::escape("::columnName::"), $arrayColumn[$i]
         $columnNameWithoutUnSlash = Get-ColumnNameRaw $arrayColumn[$i] "N"
         $string = $string -replace [regex]::escape("::columnNameWithoutUnSlash::"), $columnNameWithoutUnSlash
     }
 
+    # add primaryKey columnDefinitionBean to previous cycle
     for ($j=0; $j -ne $arrayPrimaryIndex.Count; $j++) {
         $string += "$columnDefinitionPIndexBean"
         if ($j -ne ($arrayPrimaryIndex.Count-1)) {
             $string += "`n"
         }
-
-        $string = Get-GeneralColumnType $arrayColumnType[$j] $string
+        
+        # $true is flag for PrimaryKey columnType
+        $string = Get-GeneralColumnType $arrayColumn $arrayColumnType $arrayPrimaryIndex $arrayColumnType[$j] $string $primaryRow $true
         $primaryColumn = $arrayPrimaryIndex[$j] + "_PK"
         $string = $string -replace [regex]::escape("::columnName::"), $primaryColumn
         $columnNameWithoutUnSlashPK = Get-ColumnNameRaw $arrayPrimaryIndex[$j] "Y"
         $string = $string -replace [regex]::escape("::columnNameWithoutUnSlashPK::"), $columnNameWithoutUnSlashPK
+
+        $primaryRow++
     }
 
     return $string

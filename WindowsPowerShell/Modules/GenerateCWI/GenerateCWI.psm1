@@ -2,13 +2,10 @@
 $target_OutDir = ".\target"
 $ddl_InDir = ".\Development\TdDDLs"
 $ddl_InDir_Excl = ".\ExDDL"
-<# $ddl_InDir = ".\Development\TdDDLs\shoper_alm" #>
 $cwiReport_OutDir = Join-Path $target_OutDir "cwi_reports"
 $singleLogName = "CWI_Event_Journal"
-#$table_filter = "table.C_*"
 
 ## Import src
-#. $PSScriptRoot\src\GenerateCWI-GenerateFile.ps1
 . $PSScriptRoot\src\GenerateCWI-GenerateSelect.ps1
 . $PSScriptRoot\src\GenerateCWI-GenerateInsert.ps1
 . $PSScriptRoot\src\GenerateCWI-GenerateUpdate.ps1
@@ -43,77 +40,27 @@ $columnNotNulValidation = Get-Content "$PSScriptRoot\xml-definition\validationNo
 function Invoke-GenCWIReport {
     [CmdletBinding()]
     param (
+        [Alias("a")][switch] $all,
 		[Alias("s")][switch] $select,
 		[Alias("i")][switch] $insert,
 		[Alias("u")][switch] $update,
 		[Alias("d")][switch] $delete,
 		[Alias("da")][switch] $deleteAll,
         [Alias("im")][switch] $import,
-        [Alias("a")][switch] $all,
         # Single log = one log for all tables, multi log = every table has his own log table
         [Alias("sl")][switch] $singleLog,
         [Alias("ml")][switch] $multiLog,
-        [Alias("f")][switch] $financ,
-        [Alias("h")][switch] $hypo,
         [Alias("x")][switch] $excluded
 	)
 
     $cntProc = 0
     Clean-OutputDirectory
-    if ($hypo) {
-        $gciFile = Get-ChildItem $ddl_InDir -Recurse -Include "table.C_Bond_Type.sql" ,
-        "table.Block_Related_Debt.sql" ,
-        "table.C_Cover_Block.sql" ,
-        "table.C_Source_Definition.sql" ,
-        "table.Config_Parameter_Value.sql" ,
-        "table.CWI_Event_Journal.sql" ,
-        "table.Manual_Correction.sql" ,
-        "table.Manual_Priority.sql" ,
-        "table.Mortgage_Certificate.sql" ,
-        "table.R_Block_Parameter.sql" ,
-        "table.R_Filtering_Rule.sql" ,
-        "table.R_ISIN_Block.sql" ,
-        "table.Reconstruction_Request.sql" ,
-        "table.Substitute_Cover.sql" ,
-        "table.T_Cover_Block_Product_Type.sql" | Sort-Object
-    }
-    
-    if ($financ) {
-        $gciFile = Get-ChildItem $ddl_InDir -Recurse -Include "table.C_ALM_Index_Rate.sql" ,
-        "table.C_ALM_Product.sql" ,
-        "table.C_ALM_Product_Replication.sql" ,
-        "table.C_Calculation_Type.sql" ,
-        "table.C_Error.sql" ,
-        "table.C_Liquidity_Segment_Ext.sql" ,
-        "table.C_Parameter.sql" ,
-        "table.C_Repayment_Type.sql" ,
-        "table.C_SG_Party_RCT.sql" ,
-        "table.C_Schedule_Type.sql" ,
-        "table.C_Source.sql" ,
-        "table.C_Source_Hierarchy.sql" ,
-        "table.MD_Snake_Script.sql" ,
-        "table.MD_Source_Parameter_Rel.sql" ,
-        "table.Process_Manual_Request.sql" ,
-        "table.R_ALM_EIB_Hedge.sql" ,
-        "table.R_ALM_Parameter.sql" ,
-        "table.R_ALM_Parameter_Constant.sql" ,
-        "table.R_ALM_Segmentation_EIS.sql" ,
-        "table.R_B3_Segmentation.sql" ,
-        "table.R_BHFM_Segmentation.sql" ,
-        "table.R_CTR_Segmentation.sql" ,
-        "table.R_GL_Pooling_Account_Corr.sql" ,
-        "table.R_IFRS_Prod.sql" ,
-        "table.R_Interest_Rate_Range.sql" ,
-        "table.R_Ledger_Branch_Book_Value.sql" ,
-        "table.R_Ledger_Branch_BT.sql" ,
-        "table.R_Model_Product.sql" ,
-        "table.R_Source_Dependency.sql" ,
-        "table.T_Individual_Rate_Flag_AT.sql" ,
-        "table.R_Account_Nbr_On_List.sql" | Sort-Object
-    }
 
     if ($excluded) {
         $gciFile = Get-ChildItem $ddl_InDir_Excl -Recurse -Include "*.sql"
+    }
+    else {
+        $gciFile = Get-ChildItem $ddl_InDir -Recurse -Include "*.sql"
     }
 
     Write-Host "Generating CWI Reports"
@@ -128,7 +75,6 @@ function Invoke-GenCWIReport {
         $arrayPrimaryIndex = Get-PrimaryIndex $file
         $arraryNotNullColumn = Get-NotNullColumnName $file
         $arrayColumnTypeUpdated = Get-UpdatedColumnType $arrayColumnType $arrayColumn
-        #$arrayAllowNullColumn = $arrayColumn | {$arraryNotNullColumn -notcontains $_}
 
         $databaseName = Get-DatabaseName $file
 
