@@ -1,6 +1,0 @@
-$paths = Get-ChildItem c:\Users\ttintera\!Develop\RunBTEQ\
-foreach ($p in $paths) {
-    $r = $p.FullName -Replace([regex]::escape($RootSrcPath), "")
-    $Split = $r.Split("\")
-    $Split[0..($Split.count - 2)] -join "\"
-}

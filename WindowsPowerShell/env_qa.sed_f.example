@@ -1,4 +1,0 @@
-s/vsfs10.ds.kb.cz/sapckb638.ds.kb.cz/gi
-s/::ENV::/_uat/gi
-s/::USR::/CWI_Test_/gi
-s/::Date_Valid::/date '2019-09-30'/gi
