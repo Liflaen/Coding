@@ -805,7 +805,7 @@ MinimapIcon 0 Red Cross
 #   [1002] Item Layer - T2 - ECONOMY
 #------------------------------------
 
-Show # %D5 $tier->t2-1 $type->rare->elder
+Hide # %D5 $tier->t2-1 $type->rare->elder
 HasInfluence Elder
 ItemLevel >= 80
 Rarity <= Rare
@@ -814,11 +814,8 @@ SetFontSize 45
 SetTextColor 255 255 255 255             # TEXTCOLOR:	 Cosmetic White
 SetBorderColor 255 255 255 255           # BORDERCOLOR:	 T1 highlight
 SetBackgroundColor 20 110 220            # BACKGROUND:	 ShaperElder T2
-PlayAlertSound 3 300                     # DROPSOUND:	 Unique
-PlayEffect Yellow
-MinimapIcon 0 Yellow Cross
 
-Show # %D5 $tier->t2-2 $type->rare->elder
+Hide # %D5 $tier->t2-2 $type->rare->elder
 HasInfluence Elder
 ItemLevel >= 85
 Rarity <= Rare
@@ -827,9 +824,6 @@ SetFontSize 45
 SetTextColor 255 255 255 255             # TEXTCOLOR:	 Cosmetic White
 SetBorderColor 255 255 255 255           # BORDERCOLOR:	 T1 highlight
 SetBackgroundColor 20 110 220            # BACKGROUND:	 ShaperElder T2
-PlayAlertSound 3 300                     # DROPSOUND:	 Unique
-PlayEffect Yellow
-MinimapIcon 0 Yellow Cross
 
 #===============================================================================================================
 # [[1100]] Influenced Item Tiering: Remaining Tiers
@@ -4943,16 +4937,16 @@ Show
 	PlayEffect Yellow
 	MinimapIcon 0 Yellow Triangle
 
-Show 
-	Quality >= 20
-	Class Gems
-	SetFontSize 45
-	SetTextColor 30 200 200 255             # TEXTCOLOR:	 Gem High
-	SetBorderColor 30 150 180 255           # BORDERCOLOR:	 Gem T1
-	SetBackgroundColor 6 0 60               # BACKGROUND:	 20QualGem
-	PlayAlertSound 3 300                    # DROPSOUND:	 Unique
-	PlayEffect Yellow
-	MinimapIcon 0 Yellow Triangle
+# Show 
+# 	Quality >= 20
+# 	Class Gems
+# 	SetFontSize 45
+# 	SetTextColor 30 200 200 255           # TEXTCOLOR:	 Gem High
+# 	SetBorderColor 30 150 180 255         # BORDERCOLOR:	 Gem T1
+# 	SetBackgroundColor 6 0 60             # BACKGROUND:	 20QualGem
+# 	PlayAlertSound 3 300                  # DROPSOUND:	 Unique
+# 	PlayEffect Yellow
+# 	MinimapIcon 0 Yellow Triangle
 
 Show 
 	GemLevel >= 6
@@ -4966,15 +4960,12 @@ Show
 	PlayEffect Yellow
 	MinimapIcon 0 Yellow Triangle
 
-Show # %HS4
-	Quality >= 14
-	Class Gems
-	SetFontSize 45
-	SetTextColor 30 200 200 255             # TEXTCOLOR:	 Gem High
-	SetBorderColor 30 200 200 255           # BORDERCOLOR:	 Gem T2
-	PlayAlertSound 2 300                    # DROPSOUND:	 Currency Sound
-	PlayEffect White Temp
-	MinimapIcon 2 White Triangle
+Hide # %HS4
+Quality >= 14
+Class Gems
+SetFontSize 45
+SetTextColor 30 200 200 255              # TEXTCOLOR:	 Gem High
+SetBorderColor 30 200 200 255            # BORDERCOLOR:	 Gem T2
 
 #------------------------------------
 #   [4006] Leveling Rules
@@ -5904,7 +5895,7 @@ Show
 Show 
 	StackSize >= 3
 	Class Currency
-	BaseType "Blessed Orb" "Chromatic Orb" "Glassblower's Bauble" "Jeweller's Orb" "Orb of Augmentation" "Orb of Chance" "Silver Coin" "Simple Sextant"
+	BaseType "Chromatic Orb" "Simple Sextant"
 	SetFontSize 45
 	SetTextColor 0 0 0 255                  # TEXTCOLOR:	 High Special Base
 	SetBorderColor 0 0 0                    # BORDERCOLOR:	 Neutral T1.5
@@ -5914,31 +5905,31 @@ Show
 	PlayEffect White
 	MinimapIcon 2 White Circle
 
-Show 
-	StackSize >= 4
-	Class Currency
-	BaseType "Blacksmith's Whetstone" "Orb of Transmutation"
-	SetFontSize 45
-	SetTextColor 0 0 0 255                  # TEXTCOLOR:	 High Special Base
-	SetBorderColor 0 0 0                    # BORDERCOLOR:	 Neutral T1.5
-	SetBackgroundColor 213 159 0 255        # BACKGROUND:	 Currency T4
-	DisableDropSound True
-	PlayAlertSound 2 300                    # DROPSOUND:	 Currency Sound
-	PlayEffect White
-	MinimapIcon 2 White Circle
+# Show 
+# 	StackSize >= 4
+# 	Class Currency
+# 	BaseType "Orb of Transmutation"
+# 	SetFontSize 45
+# 	SetTextColor 0 0 0 255                # TEXTCOLOR:	 High Special Base
+# 	SetBorderColor 0 0 0                  # BORDERCOLOR:	 Neutral T1.5
+# 	SetBackgroundColor 213 159 0 255      # BACKGROUND:	 Currency T4
+# 	DisableDropSound True
+# 	PlayAlertSound 2 300                  # DROPSOUND:	 Currency Sound
+# 	PlayEffect White
+# 	MinimapIcon 2 White Circle
 
-Show 
-	StackSize >= 6
-	Class Currency
-	BaseType "Armourer's Scrap" "Portal Scroll" "Scroll of Wisdom"
-	SetFontSize 45
-	SetTextColor 0 0 0 255                  # TEXTCOLOR:	 High Special Base
-	SetBorderColor 0 0 0                    # BORDERCOLOR:	 Neutral T1.5
-	SetBackgroundColor 213 159 0 255        # BACKGROUND:	 Currency T4
-	DisableDropSound True
-	PlayAlertSound 2 300                    # DROPSOUND:	 Currency Sound
-	PlayEffect White
-	MinimapIcon 2 White Circle
+# Show 
+# 	StackSize >= 6
+# 	Class Currency
+# 	BaseType "Armourer's Scrap" "Portal Scroll" "Scroll of Wisdom"
+# 	SetFontSize 45
+# 	SetTextColor 0 0 0 255                # TEXTCOLOR:	 High Special Base
+# 	SetBorderColor 0 0 0                  # BORDERCOLOR:	 Neutral T1.5
+# 	SetBackgroundColor 213 159 0 255      # BACKGROUND:	 Currency T4
+# 	DisableDropSound True
+# 	PlayAlertSound 2 300                  # DROPSOUND:	 Currency Sound
+# 	PlayEffect White
+# 	MinimapIcon 2 White Circle
 
 #===============================================================================================================
 # [[4800]] Currency - Exceptions - Leveling Currencies
@@ -6094,7 +6085,7 @@ MinimapIcon 2 White Circle
 
 Show # %H5 %C4 $tier->t23 $type->currency
 Class Currency
-BaseType == "Abrasive Catalyst" "Annulment Shard" "Bestiary Orb" "Blessed Orb" "Cartographer's Chisel" "Facetor's Lens" "Glassblower's Bauble" "Harbinger's Shard" "Intrinsic Catalyst" "Orb of Alchemy" "Orb of Alteration" "Orb of Fusing" "Orb of Horizons" "Chromatic Orb"
+BaseType == "Abrasive Catalyst" "Annulment Shard" "Bestiary Orb" "Cartographer's Chisel" "Facetor's Lens" "Intrinsic Catalyst" "Orb of Alchemy" "Orb of Alteration" "Orb of Fusing" "Chromatic Orb"
 SetFontSize 45
 SetTextColor 0 0 0 255                   # TEXTCOLOR:	 High Special Base
 SetBorderColor 0 0 0                     # BORDERCOLOR:	 Neutral T1.5
@@ -6314,7 +6305,7 @@ SetTextColor 210 178 135
 SetBackgroundColor 0 0 0 255
 SetBorderColor 213 159 100 200
 SetFontSize 42
-BaseType == "Chaos Shard" "Horizon Shard"
+BaseType == "Chaos Shard" "Horizon Shard" "Blessed Orb" "Glassblower's Bauble" "Harbinger's Shard" "Orb of Horizons"
 
 Show # $tier->t11 $type->currency
 Class Currency
@@ -7079,7 +7070,7 @@ Show # $tier->ex->5l $type->uniques
 
 Show # $tier->multispecial $type->uniques
 Rarity Unique
-BaseType == "Archon Kite Shield" "Coral Amulet" "Gavel" "Glorious Plate" "Gold Ring" "Highborn Staff" "Jade Amulet" "Judgement Staff" "Lacquered Garb" "Long Staff" "Magistrate Crown" "Medium Cluster Jewel" "Murder Mitts" "Paua Amulet" "Sadist Garb" "Saint's Hauberk" "Sentinel Jacket" "Silver Flask" "Sinner Tricorne" "Small Cluster Jewel" "Sorcerer Boots" "Stealth Boots" "Studded Belt" "Sulphur Flask" "Chain Gloves" "Topaz Ring" "Triumphant Lamellar" "Turquoise Amulet" "Titan Greaves" "Two-Stone Ring" "Unset Ring"
+BaseType == "Archon Kite Shield" "Coral Amulet" "Gavel" "Glorious Plate" "Gold Ring" "Highborn Staff" "Jade Amulet" "Judgement Staff" "Lacquered Garb" "Long Staff" "Magistrate Crown" "Medium Cluster Jewel" "Murder Mitts" "Paua Amulet" "Sadist Garb" "Saint's Hauberk" "Sentinel Jacket" "Silver Flask" "Sinner Tricorne" "Small Cluster Jewel" "Sorcerer Boots" "Stealth Boots" "Studded Belt" "Sulphur Flask" "Topaz Ring" "Triumphant Lamellar" "Turquoise Amulet" "Two-Stone Ring" "Unset Ring" "Deicide Mask" "Chain Gloves" "Titan Greaves"
 SetFontSize 45
 SetTextColor 0 0 0 255                   # TEXTCOLOR:	 High Special Base
 SetBorderColor 0 0 0 255                 # BORDERCOLOR:	 Neutral T1
@@ -7184,7 +7175,7 @@ MinimapIcon 2 Brown Star
 
 Show # %H4 %C4 $tier->hideable $type->uniques
 Rarity Unique
-BaseType == "Abyssal Axe" "Ancient Gauntlets" "Antique Greaves" "Antique Rapier" "Assassin's Garb" "Auric Mace" "Aventail Helmet" "Awl" "Baroque Round Shield" "Basket Rapier" "Bastard Sword" "Bone Armour" "Boot Blade" "Boot Knife" "Branded Kite Shield" "Brass Spirit Shield" "Bronze Gauntlets" "Bronze Sceptre" "Bronzescale Gauntlets" "Buckskin Tunic" "Burnished Spiked Shield" "Chiming Spirit Shield" "Close Helmet" "Coiled Staff" "Colossal Tower Shield" "Compound Spiked Shield" "Conjurer Boots" "Conjurer Gloves" "Conquest Chainmail" "Copper Plate" "Corrugated Buckler" "Corsair Sword" "Crusader Chainmail" "Crystal Belt" "Crystal Sceptre" "Cutthroat's Garb" "Decimation Bow" "Decorative Axe" "Deerskin Boots" "Deicide Mask" "Demon's Horn" "Desert Brigandine" "Destiny Leather" "Destroyer Regalia" "Diamond Flask" "Dragonscale Boots" "Dragonscale Gauntlets" "Dread Maul" "Dream Mace" "Driftwood Wand" "Dusk Blade" "Eelskin Gloves" "Elder Sword" "Elegant Foil" "Embroidered Gloves" "Engraved Wand" "Estoc" "Ezomyte Axe" "Festival Mask" "Flaying Knife" "Fright Claw" "Full Dragonscale" "Full Scale Armour" "Goat's Horn" "Golden Mask" "Goliath Gauntlets" "Great Helmet" "Greater Mana Flask" "Grinning Fetish" "Gut Ripper" "Hallowed Hybrid Flask" "Harmonic Spirit Shield" "Headsman Axe" "Highland Blade" "Imbued Wand" "Imperial Staff Piece" "Infernal Axe" "Iron Gauntlets" "Iron Sceptre" "Ivory Spirit Shield" "Jagged Foil" "Karui Sceptre" "Laminated Kite Shield" "Large Hybrid Flask" "Lathi" "Legion Boots" "Legion Sword Piece" "Lion Sword" "Lunaris Circlet" "Marble Amulet" "Mesh Boots" "Mesh Gloves" "Military Staff" "Mosaic Kite Shield" "Nailed Fist" "Necromancer Silks" "Nubuck Gloves" "Opal Sceptre" "Ornate Mace" "Ornate Ringmail" "Pine Buckler" "Plague Mask" "Plated Greaves" "Platinum Kris" "Platinum Sceptre" "Poleaxe" "Polished Spiked Shield" "Primordial Staff" "Quartz Wand" "Quicksilver Flask" "Recurve Bow" "Reinforced Tower Shield" "Riveted Boots" "Rock Breaker" "Rotted Round Shield" "Royal Skean" "Sabre" "Sage's Robe" "Saintly Chainmail" "Samite Gloves" "Samnite Helmet" "Satin Gloves" "Scholar's Robe" "Secutor Helm" "Serpentine Staff" "Serpentscale Gauntlets" "Shadow Axe" "Shagreen Boots" "Shagreen Gloves" "Sharkskin Boots" "Short Bow" "Silk Slippers" "Simple Robe" "Slaughter Knife" "Slink Gloves" "Soldier Boots" "Sorcerer Gloves" "Sovereign Spiked Shield" "Spidersilk Robe" "Spiked Club" "Spike-Point Arrow Quiver" "Steel Gauntlets" "Steel Kite Shield" "Stiletto" "Strapped Boots" "Studded Round Shield" "Sundering Axe" "Supreme Spiked Shield" "Teak Round Shield" "Terror Maul" "Thresher Claw" "Throat Stabber" "Tiger Sword" "Tomahawk" "Tribal Circlet" "Tricorne" "Twilight Blade" "Ursine Pelt" "Vaal Buckler" "Vaal Claw" "Vanguard Belt" "Vile Staff" "Visored Sallet" "War Sword" "Whalebone Rapier" "Wool Gloves" "Wool Shoes" "Wrapped Mitts" "Wyrmscale Gauntlets" "Zealot Helmet"
+BaseType == "Abyssal Axe" "Ancient Gauntlets" "Antique Greaves" "Antique Rapier" "Assassin's Garb" "Auric Mace" "Aventail Helmet" "Awl" "Baroque Round Shield" "Basket Rapier" "Bastard Sword" "Bone Armour" "Boot Blade" "Boot Knife" "Branded Kite Shield" "Brass Spirit Shield" "Bronze Gauntlets" "Bronze Sceptre" "Bronzescale Gauntlets" "Buckskin Tunic" "Burnished Spiked Shield" "Chiming Spirit Shield" "Close Helmet" "Coiled Staff" "Colossal Tower Shield" "Compound Spiked Shield" "Conjurer Boots" "Conjurer Gloves" "Conquest Chainmail" "Copper Plate" "Corrugated Buckler" "Corsair Sword" "Crusader Chainmail" "Crystal Belt" "Crystal Sceptre" "Cutthroat's Garb" "Decimation Bow" "Decorative Axe" "Deerskin Boots" "Demon's Horn" "Desert Brigandine" "Destiny Leather" "Destroyer Regalia" "Diamond Flask" "Dragonscale Boots" "Dragonscale Gauntlets" "Dread Maul" "Dream Mace" "Driftwood Wand" "Dusk Blade" "Eelskin Gloves" "Elder Sword" "Elegant Foil" "Embroidered Gloves" "Engraved Wand" "Estoc" "Ezomyte Axe" "Festival Mask" "Flaying Knife" "Fright Claw" "Full Dragonscale" "Full Scale Armour" "Goat's Horn" "Golden Mask" "Goliath Gauntlets" "Great Helmet" "Greater Mana Flask" "Grinning Fetish" "Gut Ripper" "Hallowed Hybrid Flask" "Harmonic Spirit Shield" "Headsman Axe" "Highland Blade" "Imbued Wand" "Imperial Staff Piece" "Infernal Axe" "Iron Gauntlets" "Iron Sceptre" "Ivory Spirit Shield" "Jagged Foil" "Karui Sceptre" "Laminated Kite Shield" "Large Hybrid Flask" "Lathi" "Legion Boots" "Legion Sword Piece" "Lion Sword" "Lunaris Circlet" "Marble Amulet" "Mesh Boots" "Mesh Gloves" "Military Staff" "Mosaic Kite Shield" "Nailed Fist" "Necromancer Silks" "Nubuck Gloves" "Opal Sceptre" "Ornate Mace" "Ornate Ringmail" "Pine Buckler" "Plague Mask" "Plated Greaves" "Platinum Kris" "Platinum Sceptre" "Poleaxe" "Polished Spiked Shield" "Primordial Staff" "Quartz Wand" "Quicksilver Flask" "Recurve Bow" "Reinforced Tower Shield" "Riveted Boots" "Rock Breaker" "Rotted Round Shield" "Royal Skean" "Sabre" "Sage's Robe" "Saintly Chainmail" "Samite Gloves" "Samnite Helmet" "Satin Gloves" "Scholar's Robe" "Secutor Helm" "Serpentine Staff" "Serpentscale Gauntlets" "Shadow Axe" "Shagreen Boots" "Shagreen Gloves" "Sharkskin Boots" "Short Bow" "Silk Slippers" "Simple Robe" "Slaughter Knife" "Slink Gloves" "Soldier Boots" "Sorcerer Gloves" "Sovereign Spiked Shield" "Spidersilk Robe" "Spiked Club" "Spike-Point Arrow Quiver" "Steel Gauntlets" "Steel Kite Shield" "Stiletto" "Strapped Boots" "Studded Round Shield" "Sundering Axe" "Supreme Spiked Shield" "Teak Round Shield" "Terror Maul" "Thresher Claw" "Throat Stabber" "Tiger Sword" "Tomahawk" "Tribal Circlet" "Tricorne" "Twilight Blade" "Ursine Pelt" "Vaal Buckler" "Vaal Claw" "Vanguard Belt" "Vile Staff" "Visored Sallet" "War Sword" "Whalebone Rapier" "Wool Gloves" "Wool Shoes" "Wrapped Mitts" "Wyrmscale Gauntlets" "Zealot Helmet"
 SetFontSize 45
 SetTextColor 175 96 37 255               # TEXTCOLOR:	 Unique
 SetBorderColor 175 96 37 255             # BORDERCOLOR:	 Aspect Unique
